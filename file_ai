@@ -1,0 +1,84 @@
+def create_ton_wrapped_token(token_contract_address):
+    # Generate a new TON contract address
+    ton_contract_address = deploy_ton_contract()
+    
+    # Deploy the contract with the required methods
+    deploy_contract_with_methods(ton_contract_address, ['send', 'mintToAddress', 'burn'])
+    
+    return ton_contract_address
+
+---
+def bridge_token_to_ton(amount, token_contract_address, ton_address):
+    # Step 1: Receive tokens on BNB chain and store in contract
+    received = receive_bnb_tokens(amount, token_contract_address)
+    
+    if received:
+        # Step 2: Mint equivalent wrapped tokens on TON
+        mint_to_ton(token_contract_address, ton_address, amount)
+        return True
+    else:
+        return False
+---
+def return_token_to_bnb(amount, token_contract_address, bnb_address):
+    # Step 1: Receive tokens on TON chain and burn them
+    burned = burn_ton_tokens(amount, token_contract_address)
+    
+    if burned:
+        # Step 2: Send equivalent tokens on BNB chain
+        send_bnb_tokens(bnb_address, amount)
+        return True
+    else:
+        return False
+---
+class BinanceTonBridge:
+    
+    def __init__(self):
+        self.ton_contracts = {}
+        
+    def create_ton_wrapped_token(self, token_contract_address):
+        ton_contract_address = self.deploy_ton_contract()
+        self.deploy_contract_with_methods(ton_contract_address, ['send', 'mintToAddress', 'burn'])
+        self.ton_contracts[token_contract_address] = ton_contract_address
+        return ton_contract_address
+    
+    def bridge_token_to_ton(self, amount, token_contract_address, ton_address):
+        received = self.receive_bnb_tokens(amount, token_contract_address)
+        if received:
+            ton_contract_address = self.ton_contracts.get(token_contract_address)
+            if ton_contract_address:
+                self.mint_to_ton(ton_contract_address, ton_address, amount)
+                return True
+        return False
+    
+    def return_token_to_bnb(self, amount, token_contract_address, bnb_address):
+        burned = self.burn_ton_tokens(amount, token_contract_address)
+        if burned:
+            self.send_bnb_tokens(bnb_address, amount)
+            return True
+        return False
+    
+    def deploy_ton_contract(self):
+        # Implement contract deployment logic here
+        pass
+    
+    def deploy_contract_with_methods(self, contract_address, methods):
+        # Implement method deployment logic here
+        pass
+    
+    def receive_bnb_tokens(self, amount, contract_address):
+        # Implement logic to receive tokens on BNB chain
+        pass
+    
+    def mint_to_ton(self, ton_contract_address, ton_address, amount):
+        # Implement minting logic on TON chain
+        pass
+    
+    def burn_ton_tokens(self, amount, token_contract_address):
+        # Implement burning logic on TON chain
+        pass
+    
+    def send_bnb_tokens(self, bnb_address, amount):
+        # Implement sending logic on BNB chain
+        pass
+---
+Create function to deploy standart coin contract on TON chain with dynamic name and include methods: mint, mint_to, burn
